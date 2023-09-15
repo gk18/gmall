@@ -2,7 +2,11 @@ package com.king.gmall.product.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.king.gmall.model.product.BaseAttrInfo;
+
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
+
 
 /***
  * ClassName: BaseAttrInfoMapper
@@ -14,4 +18,11 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface BaseAttrInfoMapper extends BaseMapper<BaseAttrInfo> {
+    /**
+     * 根据分类id查询平台属性
+     * @param categoryId
+     * @return
+     */
+    List<BaseAttrInfo> selectAttrInfo(Long categoryId);
+
 }
