@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper SYSTEM "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.king.gmall.product.mapper.BaseAttrInfoMapper">
+<!--    平台属性名和平台属性值的一对多映射-->
+    <resultMap id="buildTree" type="com.king.gmall.model.product.BaseAttrInfo" autoMapping="true">
+        <id property="id" column="id"></id>
+        <collection property="attrValueList" ofType="com.king.gmall.model.product.BaseAttrValue" autoMapping="true">
+            <id property="id" column="v_id"></id>
+
+        </collection>
+    </resultMap>
+<!--    根据分类id查询平台属性-->
+    <select id="selectAttrInfo" resultMap="buildTree">
+        SELECT
+            t1.id,t1.attr_name,t1.category_id,t2.id v_id,t2.value_name,t2.attr_id
+        FROM
+            base_attr_info t1
+                LEFT JOIN
+            base_attr_value t2
+            ON
+                t1.id = t2.attr_id
+        WHERE
+            t1.category_id = #{categoryId}
+    </select>
+</mapper>
