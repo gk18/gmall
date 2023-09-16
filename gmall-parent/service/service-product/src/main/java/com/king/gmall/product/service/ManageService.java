@@ -1,9 +1,7 @@
 package com.king.gmall.product.service;
 
-import com.king.gmall.model.product.BaseAttrInfo;
-import com.king.gmall.model.product.BaseCategory1;
-import com.king.gmall.model.product.BaseCategory2;
-import com.king.gmall.model.product.BaseCategory3;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.king.gmall.model.product.*;
 
 import java.util.List;
 
@@ -55,4 +53,41 @@ public interface ManageService {
      * @param attrId
      */
     void removeBaseAttrInfo(Long attrId);
+
+    /**
+     * 分页查询品牌
+     *
+     * @return
+     */
+    IPage<BaseTrademark> pageListBaseTrademark(Integer page, Integer size);
+
+    /**
+     * 查询所有品牌
+     *
+     * @return
+     */
+    List<BaseTrademark> listBaseTrademark();
+
+    /**
+     * 销售属性列表
+     * @return
+     */
+    List<BaseSaleAttr> listBaseSaleAtt();
+
+    /**
+     * 新增SpuInfo
+     *
+     * @param spuInfo
+     */
+    void saveSpuInfo(SpuInfo spuInfo);
+
+    /**
+     * 根据第三级分类id分页查询SpuInfo
+     *
+     * @param page
+     * @param size
+     * @param category3Id
+     * @return
+     */
+     IPage<SpuInfo> pageSpuInfo(Integer page, Integer size, Long category3Id);
 }

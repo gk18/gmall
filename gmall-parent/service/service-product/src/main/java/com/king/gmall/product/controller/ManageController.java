@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.api.R;
 import com.king.gmall.common.result.Result;
 
 import com.king.gmall.model.product.BaseAttrInfo;
+import com.king.gmall.model.product.SpuInfo;
 import com.king.gmall.product.service.ManageService;
 import org.springframework.web.bind.annotation.*;
 
@@ -58,6 +59,7 @@ public class ManageController {
 
     /**
      * 保存平台属性
+     *
      * @param baseAttrInfo
      * @return
      */
@@ -69,6 +71,7 @@ public class ManageController {
 
     /**
      * 查询三级分类下的平台属性
+     *
      * @param category1Id
      * @param category2Id
      * @param category3Id
@@ -83,6 +86,7 @@ public class ManageController {
 
     /**
      * 删除平台属性
+     *
      * @param attrId
      * @return
      */
@@ -94,6 +98,7 @@ public class ManageController {
 
     /**
      * 修改平台属性
+     *
      * @param baseAttrInfo
      * @return
      */
@@ -101,6 +106,65 @@ public class ManageController {
     public Result alterAttrInfo(@RequestBody BaseAttrInfo baseAttrInfo) {
         manageService.saveOrAlterBaseAttrInfo(baseAttrInfo);
         return Result.ok();
+    }
+
+    /**
+     * 分页查询品牌
+     *
+     * @param page
+     * @param size
+     * @return
+     */
+    @GetMapping("/baseTrademark/{page}/{size}")
+    public Result showBaseTrademark(@PathVariable("page") Integer page,
+                                    @PathVariable("size") Integer size) {
+        return Result.ok(manageService.pageListBaseTrademark(page, size));
+    }
+
+    /**
+     * 查询品牌列表
+     *
+     * @return
+     */
+    @GetMapping("/baseTrademark/getTrademarkList")
+    public Result getTrademarkList() {
+        return Result.ok(manageService.listBaseTrademark());
+    }
+
+    /**
+     * 查询销售属性列表
+     *
+     * @return
+     */
+    @GetMapping("/baseSaleAttrList")
+    public Result baseSaleAttrList() {
+        return Result.ok(manageService.listBaseSaleAtt());
+    }
+
+    /**
+     * 新增SpuInfo
+     *
+     * @param spuInfo
+     * @return
+     */
+    @PostMapping("/saveSpuInfo")
+    public Result saveSpuInfo(@RequestBody SpuInfo spuInfo) {
+        manageService.saveSpuInfo(spuInfo);
+        return Result.ok();
+    }
+
+    /**
+     * 分页展示spuInfo
+     * @param page
+     * @param size
+     * @param category3Id
+     * @return
+     */
+    @GetMapping("/{page}/{size}")
+    public Result showSpuInfo(@PathVariable("page") Integer page,
+                              @PathVariable("size") Integer size,
+                              Long category3Id) {
+        return Result.ok(manageService.pageSpuInfo(page, size, category3Id));
     }
 
 

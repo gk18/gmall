@@ -3,6 +3,7 @@ spring:
     name: service-product
   profiles:
     active: dev
+
   cloud:
     nacos:
       discovery:
