@@ -48,6 +48,14 @@ public class ManageServiceImpl implements ManageService {
     private SpuSaleAttrValueMapper spuSaleAttrValueMapper;
     @Resource
     private SpuImageMapper spuImageMapper;
+    @Resource
+    private SkuInfoMapper skuInfoMapper;
+    @Resource
+    private SkuImageMapper skuImageMapper;
+    @Resource
+    private SkuAttrValueMapper skuAttrValueMapper;
+    @Resource
+    private SkuSaleAttrValueMapper skuSaleAttrValueMapper;
 
     /**
      * 查询所有一级分类
@@ -247,10 +255,10 @@ public class ManageServiceImpl implements ManageService {
         }
         Long spuInfoId = spuInfo.getId();
         //保存销售属性名和销售属性值
-        saveSpuSaleAttr(spuInfoId,spuInfo.getSpuSaleAttrList());
+        saveSpuSaleAttr(spuInfoId, spuInfo.getSpuSaleAttrList());
 
         //保存spuImage
-        saveSpuImage(spuInfoId,spuInfo.getSpuImageList());
+        saveSpuImage(spuInfoId, spuInfo.getSpuImageList());
 
     }
 
@@ -287,12 +295,13 @@ public class ManageServiceImpl implements ManageService {
                 throw new GmallException("新增Spu销售属性名称失败", ResultCodeEnum.FAIL.getCode());
             }
             //新增属性值
-            saveSpuSaleAttrValue(spuInfoId,spuSaleAttr.getSaleAttrName(),spuSaleAttr.getSpuSaleAttrValueList());
+            saveSpuSaleAttrValue(spuInfoId, spuSaleAttr.getSaleAttrName(), spuSaleAttr.getSpuSaleAttrValueList());
         });
     }
 
     /**
      * 新增spu销售属性值
+     *
      * @param spuInfoId
      * @param saleAttrName
      * @param spuSaleAttrValueList
@@ -315,6 +324,7 @@ public class ManageServiceImpl implements ManageService {
 
     /**
      * 新增spu图片
+     *
      * @param spuInfoId
      * @param spuImageList
      */
@@ -328,4 +338,173 @@ public class ManageServiceImpl implements ManageService {
             }
         });
     }
+
+    /**
+     * 根据spuId查询图片列表
+     *
+     * @param spuId
+     * @return
+     */
+    @Override
+    public List<SpuImage> listSpuImageBySpuId(Long spuId) {
+        return spuImageMapper.selectList(new LambdaQueryWrapper<SpuImage>()
+                .eq(SpuImage::getSpuId, spuId));
+    }
+
+    /**
+     * 根据spuId查询spu销售属性表和销售属性值表
+     *
+     * @param spuId
+     * @return
+     */
+    @Override
+    public List<SpuSaleAttr> listSpuSaleAttrBySpuId(Long spuId) {
+        return spuSaleAttrMapper.selectSpuSaleAttrList(spuId);
+    }
+
+    /**
+     * 新增sku
+     *
+     * @param skuInfo
+     */
+    @Override
+    public void saveSkuInfo(SkuInfo skuInfo) {
+        //判断对象以及非空属性是否为空
+        if (skuInfo == null) {
+            throw new GmallException("参数不能为空", ResultCodeEnum.FAIL.getCode());
+        }
+        //有id则修改,无id则新增
+        //设置上架(0未上架,1已上架)
+        skuInfo.setIsSale((short) 0);
+        if (skuInfo.getId() == null) {
+            //新增
+            int insert = skuInfoMapper.insert(skuInfo);
+            if (insert <= 0) {
+                throw new GmallException("新增sku失败", ResultCodeEnum.FAIL.getCode());
+            }
+        } else {
+            //修改
+            int update = skuInfoMapper.updateById(skuInfo);
+            if (update < 0) {
+                throw new GmallException("修改sku失败", ResultCodeEnum.FAIL.getCode());
+            }
+            //先删再增
+            Long skuId = skuInfo.getId();
+            //删除skuImage
+            int delete1 = skuImageMapper.delete(new LambdaQueryWrapper<SkuImage>()
+                    .eq(SkuImage::getSkuId, skuId));
+            //删除skuAttrValue
+            int delete2 = skuAttrValueMapper.delete(new LambdaQueryWrapper<SkuAttrValue>()
+                    .eq(SkuAttrValue::getSkuId, skuId));
+            //删除skuSaleAttrValue
+            int delete3 = skuSaleAttrValueMapper.delete(new LambdaQueryWrapper<SkuSaleAttrValue>()
+                    .eq(SkuSaleAttrValue::getSkuId, skuId));
+            //确保一起成功
+            if (delete1 <= 0 || delete2 < 0 || delete3 < 0) {
+                throw new GmallException("修改sku失败", ResultCodeEnum.FAIL.getCode());
+            }
+        }
+        Long skuId = skuInfo.getId();
+        //新增skuImage
+        saveSkuImage(skuId, skuInfo.getSkuImageList());
+        //新增skuAttrValue
+        saveSkuAttrValue(skuId, skuInfo.getSkuAttrValueList());
+        //新增skuSaleAttrValue
+        saveSkuSaleAttrValue(skuId, skuInfo.getSpuId(), skuInfo.getSkuSaleAttrValueList());
+
+    }
+
+    /**
+     * 分页查询skuList
+     *
+     * @param page
+     * @param size
+     * @return
+     */
+    @Override
+    public IPage<SkuInfo> pageListSkuInfo(Integer page, Integer size) {
+        return skuInfoMapper.selectPage(new Page<SkuInfo>(page, size), null);
+    }
+
+    /**
+     * 修改商品上架或下架
+     *
+     * @param skuId
+     * @param isSale
+     */
+    @Override
+    public void upOrDown(Long skuId, short isSale) {
+        //根据id查询sku
+        SkuInfo skuInfo = skuInfoMapper.selectById(skuId);
+        //判空
+        if (skuInfo == null) {
+            throw new GmallException("id为" + skuId + "的sku不存在", ResultCodeEnum.FAIL.getCode());
+        }
+        //修改销售状态
+        skuInfo.setIsSale(isSale);
+        //更新
+        skuInfoMapper.updateById(skuInfo);
+
+    }
+
+    /**
+     * 新增skuImage
+     *
+     * @param skuId
+     * @param skuImageList
+     */
+
+    private void saveSkuImage(Long skuId, List<SkuImage> skuImageList) {
+        //遍历
+        skuImageList.stream().forEach(skuImage -> {
+            //补全属性
+            skuImage.setSkuId(skuId);
+            //新增
+            int insert = skuImageMapper.insert(skuImage);
+            if (insert <= 0) {
+                throw new GmallException("新增sku失败", ResultCodeEnum.FAIL.getCode());
+            }
+        });
+    }
+
+    /**
+     * 新增SkuAttrValue
+     *
+     * @param skuId
+     * @param skuAttrValueList
+     */
+    private void saveSkuAttrValue(Long skuId, List<SkuAttrValue> skuAttrValueList) {
+        //遍历
+        skuAttrValueList.stream().forEach(skuAttrValue -> {
+            //补全属性
+            skuAttrValue.setSkuId(skuId);
+            //新增
+            int insert = skuAttrValueMapper.insert(skuAttrValue);
+            if (insert <= 0) {
+                throw new GmallException("新增sku失败", ResultCodeEnum.FAIL.getCode());
+            }
+        });
+
+    }
+
+    /**
+     * 新增SkuSaleAttrValue
+     *
+     * @param skuId
+     * @param skuSaleAttrValueList
+     */
+    private void saveSkuSaleAttrValue(Long skuId, Long spuId, List<SkuSaleAttrValue> skuSaleAttrValueList) {
+        //遍历
+        skuSaleAttrValueList.stream().forEach(skuSaleAttrValue -> {
+            //补全属性
+            skuSaleAttrValue.setSkuId(skuId);
+            skuSaleAttrValue.setSpuId(spuId);
+            //新增
+            int insert = skuSaleAttrValueMapper.insert(skuSaleAttrValue);
+            if (insert <= 0) {
+                throw new GmallException("新增sku失败", ResultCodeEnum.FAIL.getCode());
+            }
+        });
+    }
+
 }

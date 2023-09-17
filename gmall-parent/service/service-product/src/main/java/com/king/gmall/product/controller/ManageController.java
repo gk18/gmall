@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.api.R;
 import com.king.gmall.common.result.Result;
 
 import com.king.gmall.model.product.BaseAttrInfo;
+import com.king.gmall.model.product.SkuInfo;
 import com.king.gmall.model.product.SpuInfo;
 import com.king.gmall.product.service.ManageService;
 import org.springframework.web.bind.annotation.*;
@@ -155,6 +156,7 @@ public class ManageController {
 
     /**
      * 分页展示spuInfo
+     *
      * @param page
      * @param size
      * @param category3Id
@@ -167,5 +169,71 @@ public class ManageController {
         return Result.ok(manageService.pageSpuInfo(page, size, category3Id));
     }
 
+    /**
+     * 根据spuId查询spuImage
+     *
+     * @param spuId
+     * @return
+     */
+    @GetMapping("/spuImageList/{spuId}")
+    public Result showSpuImage(@PathVariable("spuId") Long spuId) {
+        return Result.ok(manageService.listSpuImageBySpuId(spuId));
+    }
+
+    /**
+     * 根据spuId查询销售属性和销售属性值
+     *
+     * @param spuId
+     * @return
+     */
+    @GetMapping("/spuSaleAttrList/{spuId}")
+    public Result spuSaleAttrList(@PathVariable("spuId") Long spuId) {
+        return Result.ok(manageService.listSpuSaleAttrBySpuId(spuId));
+    }
+
+    /**
+     * 新增skuInfo
+     * @param skuInfo
+     * @return
+     */
+    @PostMapping("/saveSkuInfo")
+    public Result saveSkuInfo(@RequestBody SkuInfo skuInfo) {
+        manageService.saveSkuInfo(skuInfo);
+        return Result.ok();
+    }
+
+    /**
+     * 分页查询skuInfo
+     * @param page
+     * @param size
+     * @return
+     */
+    @GetMapping("/list/{page}/{size}")
+    public Result showSkuInfo(@PathVariable("page") Integer page,
+                              @PathVariable("size") Integer size) {
+        return Result.ok(manageService.pageListSkuInfo(page, size));
+    }
+
+    /**
+     * 上架商品
+     * @param skuId
+     * @return
+     */
+    @GetMapping("/onSale/{skuId}")
+    public Result onSale(@PathVariable("skuId") Long skuId) {
+        manageService.upOrDown(skuId, (short) 1);
+        return Result.ok();
+    }
+
+    /**
+     * 下架商品
+     * @param skuId
+     * @return
+     */
+    @GetMapping("/cancelSale/{skuId}")
+    public Result cancelSale(@PathVariable("skuId") Long skuId) {
+        manageService.upOrDown(skuId, (short) 0);
+        return Result.ok();
+    }
 
 }

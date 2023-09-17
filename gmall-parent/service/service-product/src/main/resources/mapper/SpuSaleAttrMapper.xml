@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper SYSTEM "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.king.gmall.product.mapper.SpuSaleAttrMapper">
+    <resultMap id="saleAttrMap" type="com.king.gmall.model.product.SpuSaleAttr"
+               autoMapping="true">
+        <id column="id" property="id"></id>
+        <collection property="spuSaleAttrValueList"
+                    ofType="com.king.gmall.model.product.SpuSaleAttrValue"
+                    autoMapping="true">
+            <id property="id" column="vid"></id>
+        </collection>
+    </resultMap>
+    <select id="selectSpuSaleAttrList" resultMap="saleAttrMap">
+        SELECT
+            a.id,a.spu_id,a.base_sale_attr_id,a.sale_attr_name,v.id vid,v.sale_attr_value_name
+        FROM
+            spu_sale_attr a
+                INNER JOIN
+            spu_sale_attr_value v
+            ON
+                        a.spu_id = v.spu_id
+                    AND
+                        a.base_sale_attr_id = v.base_sale_attr_id
+        WHERE
+            a.spu_id = #{spuId}
+    </select>
+</mapper>
