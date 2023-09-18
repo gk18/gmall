@@ -76,6 +76,7 @@ public class FileUtil {
     public static boolean delete(String groupName, String remoteFilename) throws MyException, IOException {
         int deleteFile = storageClient.delete_file(groupName, remoteFilename);
         return deleteFile == 0 ? true : false;
+
     }
 
     /**

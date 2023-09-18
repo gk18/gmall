@@ -8,11 +8,16 @@ import com.king.gmall.common.result.ResultCodeEnum;
 import com.king.gmall.model.product.*;
 import com.king.gmall.product.mapper.*;
 import com.king.gmall.product.service.ManageService;
+import com.king.gmall.product.utils.FileUtil;
+import org.csource.common.MyException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.io.IOException;
 import java.util.List;
 
 /***
@@ -56,6 +61,8 @@ public class ManageServiceImpl implements ManageService {
     private SkuAttrValueMapper skuAttrValueMapper;
     @Resource
     private SkuSaleAttrValueMapper skuSaleAttrValueMapper;
+    @Value(value = "fileServer.url")
+    private String fileServerUrl;
 
     /**
      * 查询所有一级分类
@@ -374,8 +381,6 @@ public class ManageServiceImpl implements ManageService {
             throw new GmallException("参数不能为空", ResultCodeEnum.FAIL.getCode());
         }
         //有id则修改,无id则新增
-        //设置上架(0未上架,1已上架)
-        skuInfo.setIsSale((short) 0);
         if (skuInfo.getId() == null) {
             //新增
             int insert = skuInfoMapper.insert(skuInfo);
@@ -400,7 +405,7 @@ public class ManageServiceImpl implements ManageService {
             int delete3 = skuSaleAttrValueMapper.delete(new LambdaQueryWrapper<SkuSaleAttrValue>()
                     .eq(SkuSaleAttrValue::getSkuId, skuId));
             //确保一起成功
-            if (delete1 <= 0 || delete2 < 0 || delete3 < 0) {
+            if (delete1 < 0 || delete2 < 0 || delete3 < 0) {
                 throw new GmallException("修改sku失败", ResultCodeEnum.FAIL.getCode());
             }
         }
@@ -444,6 +449,25 @@ public class ManageServiceImpl implements ManageService {
         skuInfo.setIsSale(isSale);
         //更新
         skuInfoMapper.updateById(skuInfo);
+
+    }
+
+
+    /**
+     * 新增品牌
+     * @param baseTrademark
+     */
+    @Override
+    public void saveTrademark(BaseTrademark baseTrademark) {
+        if(baseTrademark == null || baseTrademark.getTmName() == null) {
+            throw new GmallException("新增品牌失败", ResultCodeEnum.FAIL.getCode());
+
+        }
+        int insert = baseTrademarkMapper.insert(baseTrademark);
+        if(insert <= 0) {
+            throw new GmallException("新增品牌失败", ResultCodeEnum.FAIL.getCode());
+
+        }
 
     }
 

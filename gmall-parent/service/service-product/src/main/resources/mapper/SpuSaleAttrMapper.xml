@@ -24,4 +24,31 @@
         WHERE
             a.spu_id = #{spuId}
     </select>
+    <!--    根据spuId和skuId获取商品销售属性-->
+    <select id="spuSaleAttr" resultMap="saleAttrMap">
+        SELECT
+            sa.id,
+            sa.spu_id,
+            sa.sale_attr_name,
+            sa.base_sale_attr_id,
+            sav.id sale_attr_value_id,
+            sav.sale_attr_value_name,
+            skv.sku_id,
+            IF(skv.sku_id IS NULL,0,1) is_checked
+        FROM
+            spu_sale_attr sa
+                INNER JOIN
+            spu_sale_attr_value sav
+            ON
+                sa.spu_id = sav.spu_id AND sa.base_sale_attr_id = sav.base_sale_attr_id
+                LEFT JOIN
+            sku_sale_attr_value skv
+            ON
+                sav.id =skv.sale_attr_value_id AND skv.sku_id = #{skuId}
+        WHERE
+            sa.spu_id = #{spuId}
+        ORDER BY
+            sav.base_sale_attr_id,sav.id
+
+    </select>
 </mapper>

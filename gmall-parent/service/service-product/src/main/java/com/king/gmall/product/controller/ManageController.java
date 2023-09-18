@@ -1,9 +1,11 @@
 package com.king.gmall.product.controller;
 
-import com.baomidou.mybatisplus.extension.api.R;
+
 import com.king.gmall.common.result.Result;
 
+import com.king.gmall.model.enums.ProductStatus;
 import com.king.gmall.model.product.BaseAttrInfo;
+import com.king.gmall.model.product.BaseTrademark;
 import com.king.gmall.model.product.SkuInfo;
 import com.king.gmall.model.product.SpuInfo;
 import com.king.gmall.product.service.ManageService;
@@ -221,7 +223,7 @@ public class ManageController {
      */
     @GetMapping("/onSale/{skuId}")
     public Result onSale(@PathVariable("skuId") Long skuId) {
-        manageService.upOrDown(skuId, (short) 1);
+        manageService.upOrDown(skuId, ProductStatus.ON_SALE.getIsSale());
         return Result.ok();
     }
 
@@ -232,7 +234,18 @@ public class ManageController {
      */
     @GetMapping("/cancelSale/{skuId}")
     public Result cancelSale(@PathVariable("skuId") Long skuId) {
-        manageService.upOrDown(skuId, (short) 0);
+        manageService.upOrDown(skuId, ProductStatus.CANCEL_SALE.getIsSale());
+        return Result.ok();
+    }
+
+    /**
+     * 新增品牌
+     * @param baseTrademark
+     * @return
+     */
+    @PostMapping("/baseTrademark/save")
+    public Result saveBaseTrademark(@RequestBody BaseTrademark baseTrademark) {
+        manageService.saveTrademark(baseTrademark);
         return Result.ok();
     }
 

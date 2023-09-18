@@ -2,6 +2,7 @@ package com.king.gmall.product.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.king.gmall.model.product.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -134,5 +135,11 @@ public interface ManageService {
      * @param isSale
      */
     void upOrDown(Long skuId, short isSale);
+
+    /**
+     * 新增品牌
+     * @param baseTrademark
+     */
+    void saveTrademark(BaseTrademark baseTrademark);
 
 }

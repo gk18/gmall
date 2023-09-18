@@ -41,7 +41,7 @@ public class FileController {
     @PostMapping("/fileUpload")
     public Result upload(@RequestParam("file") MultipartFile file) throws MyException, IOException {
         String path = FileUtil.upload(file);
-        return Result.ok(url + "/" + path);
+        return Result.ok(url + path);
 
     }
 }
