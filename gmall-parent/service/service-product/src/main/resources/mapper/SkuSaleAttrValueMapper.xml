@@ -4,17 +4,17 @@
 
     <select id="selectSkuMap" resultType="java.util.Map">
         SELECT
-            skv.sku_id,
-            GROUP_CONCAT(spv.sale_attr_value_name ORDER BY spv.base_sale_attr_id SEPARATOR '|') as value_id
+            t2.sku_id,
+            GROUP_CONCAT(DISTINCT t2.sale_attr_value_id ORDER BY t2.sale_attr_value_id SEPARATOR ',') value_id
         FROM
-            sku_sale_attr_value skv
+            spu_sale_attr_value t1
                 INNER JOIN
-            spu_sale_attr_value spv
+            sku_sale_attr_value t2
             ON
-                skv.sale_attr_value_id = spv.id
+                t1.id = t2.sale_attr_value_id AND t1.spu_id = t2.spu_id
         WHERE
-            skv.spu_id = #{spuId}
+            t1.spu_id = #{spuId}
         GROUP BY
-            skv.sku_id
+            t2.sku_id
     </select>
 </mapper>

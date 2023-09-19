@@ -2,6 +2,7 @@ package com.king.gmall.product.client.fallback;
 
 import com.king.gmall.common.result.Result;
 import com.king.gmall.model.product.BaseCategoryView;
+import com.king.gmall.model.product.SkuImage;
 import com.king.gmall.model.product.SkuInfo;
 import com.king.gmall.model.product.SpuSaleAttr;
 import org.springframework.stereotype.Component;
@@ -30,6 +31,17 @@ public class ProductFeignClientFallback implements ProductFeignClient {
      */
     @Override
     public SkuInfo getSkuInfo(Long skuId) {
+        return null;
+    }
+
+    /**
+     * 查询sku图片列表
+     *
+     * @param skuId
+     * @return
+     */
+    @Override
+    public List<SkuImage> getImageList(Long skuId) {
         return null;
     }
 

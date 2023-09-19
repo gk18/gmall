@@ -27,28 +27,28 @@
     <!--    根据spuId和skuId获取商品销售属性-->
     <select id="spuSaleAttr" resultMap="saleAttrMap">
         SELECT
-            sa.id,
-            sa.spu_id,
-            sa.sale_attr_name,
-            sa.base_sale_attr_id,
-            sav.id sale_attr_value_id,
-            sav.sale_attr_value_name,
-            skv.sku_id,
-            IF(skv.sku_id IS NULL,0,1) is_checked
+            t1.id,
+            t1.sale_attr_name,
+            t1.base_sale_attr_id,
+            t1.spu_id,
+            t2.id vid,
+            t2.sale_attr_value_name,
+            t3.sku_id,
+            IF(t3.sku_id IS NULL,0,1) is_checked
         FROM
-            spu_sale_attr sa
+            spu_sale_attr t1
                 INNER JOIN
-            spu_sale_attr_value sav
+            spu_sale_attr_value t2
             ON
-                sa.spu_id = sav.spu_id AND sa.base_sale_attr_id = sav.base_sale_attr_id
+                t1.base_sale_attr_id = t2.base_sale_attr_id AND t1.spu_id = t2.spu_id
                 LEFT JOIN
-            sku_sale_attr_value skv
+            sku_sale_attr_value t3
             ON
-                sav.id =skv.sale_attr_value_id AND skv.sku_id = #{skuId}
+                t2.id = t3.sale_attr_value_id AND t3.sku_id = #{skuId}
         WHERE
-            sa.spu_id = #{spuId}
+            t2.spu_id = #{spuId}
         ORDER BY
-            sav.base_sale_attr_id,sav.id
+            t1.base_sale_attr_id
 
     </select>
 </mapper>

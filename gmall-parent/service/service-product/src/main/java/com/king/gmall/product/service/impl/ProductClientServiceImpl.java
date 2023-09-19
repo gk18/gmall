@@ -56,6 +56,18 @@ public class ProductClientServiceImpl implements ProductClientService {
     }
 
     /**
+     * 根据skuId查询图片列表
+     *
+     * @param skuId
+     * @return
+     */
+    @Override
+    public List<SkuImage> getSkuImageBySkuId(Long skuId) {
+        return skuImageMapper.selectList(new LambdaQueryWrapper<SkuImage>()
+                .eq(SkuImage::getSkuId, skuId));
+    }
+
+    /**
      * 根据第三级分类id查询所有分类信息(三级分类id,name)
      *
      * @param category3Id
@@ -106,9 +118,10 @@ public class ProductClientServiceImpl implements ProductClientService {
         //初始化Map
         HashMap<Object, Object> result = new HashMap<>();
         //查询所有键值对
-        List<Map> maps = skuSaleAttrValueMapper.selectSkuMap(spuId);
+        List<Map> maps = skuSaleAttrValueMapper.selectSkuSaleValueId(spuId);
         maps.stream().forEach(map -> {
-            result.put(map.get("sku_id"), map.get("value_id"));
+            //销售属性值列表做键,skuId做值
+            result.put(map.get("value_id"), map.get("sku_id"));
         });
         return result;
     }

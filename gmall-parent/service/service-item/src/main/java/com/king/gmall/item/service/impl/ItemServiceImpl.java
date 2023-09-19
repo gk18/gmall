@@ -1,10 +1,10 @@
 package com.king.gmall.item.service.impl;
 
-import com.alibaba.fastjson.JSONObject;
-import com.king.gmall.common.result.Result;
+
 import com.king.gmall.item.service.ItemService;
 
 import com.king.gmall.model.product.BaseCategoryView;
+import com.king.gmall.model.product.SkuImage;
 import com.king.gmall.model.product.SkuInfo;
 import com.king.gmall.model.product.SpuSaleAttr;
 import com.king.gmall.product.client.ProductFeignClient;
@@ -13,9 +13,11 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
-import java.util.HashMap;
+
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 
 /***
  * ClassName: ItemServiceImpl
@@ -29,6 +31,7 @@ import java.util.Map;
 public class ItemServiceImpl implements ItemService {
     @Resource
     private ProductFeignClient productFeignClient;
+
     /**
      * 获取sku详细信息,用于生成sku详情页面
      *
@@ -37,29 +40,68 @@ public class ItemServiceImpl implements ItemService {
      */
     @Override
     public Map<String, Object> getSkuDetails(Long skuId) {
-        //远程调用商品微服务service-product,获取sku的info  image 销售属性 平台属性信息
-        //远程调用获取skuInfo
-        SkuInfo skuInfo = productFeignClient.getSkuInfo(skuId);
-        //获取类别
-        BaseCategoryView categoryView = productFeignClient.getCategoryView(skuInfo.getCategory3Id());
-        //获取价格
-        BigDecimal skuPrice = productFeignClient.getSkuPrice(skuId);
-        //获取销售属性与sku键值对
-        Map skuValueIdsMap = productFeignClient.getSkuValueIdsMap(skuInfo.getSpuId());
-        //获取指定spu与sku的商品的销售属性值信息
-        List<SpuSaleAttr> spuSaleAttrListCheckBySku =
-                productFeignClient.getSpuAttrListCheckBySku(skuId, skuInfo.getSpuId());
-        //包装返回结果
-        Map<String, Object> result = new HashMap<>();
-        result.put("skuInfo", skuInfo);
-        result.put("categoryView", categoryView);
-        result.put("skuPrice", skuPrice);
-        //map类型最好进行json串转换,方便前端进行处理
-        result.put("skuValueIdsMap", JSONObject.toJSONString(skuValueIdsMap));
-        result.put("spuSaleAttrListCheckBySku", spuSaleAttrListCheckBySku);
-        //返回结果
-        return result;
+        //组装前端需要展示的数据
+        Map map = new ConcurrentHashMap<>();
+        //使用异步编排优化
+        //1.查询skuInfo
+        CompletableFuture<SkuInfo> future1 = CompletableFuture.supplyAsync(() -> {
+
+            SkuInfo skuInfo = productFeignClient.getSkuInfo(skuId);
+            if (skuInfo == null || skuInfo.getSpuId() == null) {
+                return null;
+            }
+            return skuInfo;
+        });
+
+        //2.分类查询
+        CompletableFuture<Void> future2 = future1.thenAccept(skuInfo -> {
+            if (skuInfo == null || skuInfo.getSpuId() == null) {
+                return;
+            }
+            BaseCategoryView categoryView = productFeignClient.getCategoryView(skuInfo.getCategory3Id());
+            map.put("categoryView", categoryView);
+        });
+        //3.图片数据
+        CompletableFuture<Void> future3 = future1.thenAccept(skuInfo -> {
+            if (skuInfo == null || skuInfo.getSpuId() == null) {
+                return;
+            }
+            List<SkuImage> imageList = productFeignClient.getImageList(skuId);
+            map.put("imageList", imageList);
+        });
+
+        //4.最新价格
+        CompletableFuture<Void> future4 = future1.thenAccept(skuInfo -> {
+            if (skuInfo == null || skuInfo.getSpuId() == null) {
+                return;
+            }
+            BigDecimal skuPrice = productFeignClient.getSkuPrice(skuId);
+            map.put("skuPrice", skuPrice);
+        });
+
+        //5.销售属性
+        CompletableFuture<Void> future5 = future1.thenAccept(skuInfo -> {
+            if (skuInfo == null || skuInfo.getSpuId() == null) {
+                return;
+            }
+            List<SpuSaleAttr> spuSaleAttrListBySkuIdAndSpuId =
+                    productFeignClient.getSpuAttrListCheckBySku(skuId, skuInfo.getSpuId());
+            map.put("spuSaleAttrListBySkuIdAndSpuId", spuSaleAttrListBySkuIdAndSpuId);
+        });
+
+        //6.页面跳转键值对
+        CompletableFuture<Void> future6 = future1.thenAccept(skuInfo -> {
+            if (skuInfo == null || skuInfo.getSpuId() == null) {
+                return;
+            }
+            Map skuValueIdsMap = productFeignClient.getSkuValueIdsMap(skuInfo.getSpuId());
+            map.put("skuValueIdsMap", skuValueIdsMap);
+        });
+        CompletableFuture.allOf(future2, future3, future4, future5, future6).join();
+        return map;
+
 
     }
+
 
 }

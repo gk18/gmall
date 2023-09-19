@@ -1,6 +1,7 @@
 package com.king.gmall.product.service;
 
 import com.king.gmall.model.product.BaseCategoryView;
+import com.king.gmall.model.product.SkuImage;
 import com.king.gmall.model.product.SkuInfo;
 import com.king.gmall.model.product.SpuSaleAttr;
 
@@ -23,6 +24,13 @@ public interface ProductClientService {
      * @return
      */
     SkuInfo getSkuInfo(Long skuId);
+
+    /**
+     * 根据skuId查询图片列表
+     * @param skuId
+     * @return
+     */
+    List<SkuImage> getSkuImageBySkuId(Long skuId);
 
     /**
      * 根据第三级分类id查询所有分类信息(三级分类id,name)

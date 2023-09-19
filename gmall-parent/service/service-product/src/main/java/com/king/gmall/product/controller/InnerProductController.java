@@ -1,6 +1,7 @@
 package com.king.gmall.product.controller;
 
 import com.king.gmall.model.product.BaseCategoryView;
+import com.king.gmall.model.product.SkuImage;
 import com.king.gmall.model.product.SkuInfo;
 import com.king.gmall.model.product.SpuSaleAttr;
 import com.king.gmall.product.service.ProductClientService;
@@ -37,6 +38,16 @@ public class InnerProductController {
     @GetMapping("/getSkuInfo/{skuId}")
     public SkuInfo getSkuInfo(@PathVariable("skuId") Long skuId) {
         return productClientService.getSkuInfo(skuId);
+    }
+
+    /**
+     * 查询sku图片列表
+     * @param skuId
+     * @return
+     */
+    @GetMapping("/getSkuImage/{skuId}")
+    public List<SkuImage> getImageList(@PathVariable("skuId") Long skuId) {
+        return productClientService.getSkuImageBySkuId(skuId);
     }
 
     /**

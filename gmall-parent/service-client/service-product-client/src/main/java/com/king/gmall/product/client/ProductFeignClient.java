@@ -2,6 +2,7 @@ package com.king.gmall.product.client;
 
 import com.king.gmall.common.result.Result;
 import com.king.gmall.model.product.BaseCategoryView;
+import com.king.gmall.model.product.SkuImage;
 import com.king.gmall.model.product.SkuInfo;
 import com.king.gmall.model.product.SpuSaleAttr;
 import com.king.gmall.product.client.fallback.ProductFeignClientFallback;
@@ -34,6 +35,13 @@ public interface ProductFeignClient {
      */
     @GetMapping("/getSkuInfo/{skuId}")
     public SkuInfo getSkuInfo(@PathVariable("skuId") Long skuId);
+    /**
+     * 查询sku图片列表
+     * @param skuId
+     * @return
+     */
+    @GetMapping("/getSkuImage/{skuId}")
+    public List<SkuImage> getImageList(@PathVariable("skuId") Long skuId);
 
     /**
      * 根据三级分类id查询分类信息
