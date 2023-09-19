@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /***
  * ClassName: ItemServiceImpl
@@ -31,6 +32,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ItemServiceImpl implements ItemService {
     @Resource
     private ProductFeignClient productFeignClient;
+    @Resource
+    private ThreadPoolExecutor threadPoolExecutor;
 
     /**
      * 获取sku详细信息,用于生成sku详情页面
@@ -50,53 +53,54 @@ public class ItemServiceImpl implements ItemService {
             if (skuInfo == null || skuInfo.getSpuId() == null) {
                 return null;
             }
+            map.put("skuInfo", skuInfo);
             return skuInfo;
-        });
+        },threadPoolExecutor);
 
         //2.分类查询
-        CompletableFuture<Void> future2 = future1.thenAccept(skuInfo -> {
+        CompletableFuture<Void> future2 = future1.thenAcceptAsync(skuInfo -> {
             if (skuInfo == null || skuInfo.getSpuId() == null) {
                 return;
             }
             BaseCategoryView categoryView = productFeignClient.getCategoryView(skuInfo.getCategory3Id());
             map.put("categoryView", categoryView);
-        });
+        },threadPoolExecutor);
         //3.图片数据
-        CompletableFuture<Void> future3 = future1.thenAccept(skuInfo -> {
+        CompletableFuture<Void> future3 = future1.thenAcceptAsync(skuInfo -> {
             if (skuInfo == null || skuInfo.getSpuId() == null) {
                 return;
             }
             List<SkuImage> imageList = productFeignClient.getImageList(skuId);
             map.put("imageList", imageList);
-        });
+        },threadPoolExecutor);
 
         //4.最新价格
-        CompletableFuture<Void> future4 = future1.thenAccept(skuInfo -> {
+        CompletableFuture<Void> future4 = future1.thenAcceptAsync(skuInfo -> {
             if (skuInfo == null || skuInfo.getSpuId() == null) {
                 return;
             }
             BigDecimal skuPrice = productFeignClient.getSkuPrice(skuId);
             map.put("skuPrice", skuPrice);
-        });
+        },threadPoolExecutor);
 
         //5.销售属性
-        CompletableFuture<Void> future5 = future1.thenAccept(skuInfo -> {
+        CompletableFuture<Void> future5 = future1.thenAcceptAsync(skuInfo -> {
             if (skuInfo == null || skuInfo.getSpuId() == null) {
                 return;
             }
             List<SpuSaleAttr> spuSaleAttrListBySkuIdAndSpuId =
                     productFeignClient.getSpuAttrListCheckBySku(skuId, skuInfo.getSpuId());
-            map.put("spuSaleAttrListBySkuIdAndSpuId", spuSaleAttrListBySkuIdAndSpuId);
-        });
+            map.put("spuSaleAttrListCheckBySku", spuSaleAttrListBySkuIdAndSpuId);
+        },threadPoolExecutor);
 
         //6.页面跳转键值对
-        CompletableFuture<Void> future6 = future1.thenAccept(skuInfo -> {
+        CompletableFuture<Void> future6 = future1.thenAcceptAsync(skuInfo -> {
             if (skuInfo == null || skuInfo.getSpuId() == null) {
                 return;
             }
             Map skuValueIdsMap = productFeignClient.getSkuValueIdsMap(skuInfo.getSpuId());
             map.put("skuValueIdsMap", skuValueIdsMap);
-        });
+        },threadPoolExecutor);
         CompletableFuture.allOf(future2, future3, future4, future5, future6).join();
         return map;
 

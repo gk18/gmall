@@ -4,6 +4,9 @@ import com.king.gmall.common.result.Result;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import javax.websocket.server.PathParam;
 
 /***
  * ClassName: ItemFeignClient
@@ -15,6 +18,6 @@ import org.springframework.web.bind.annotation.PathVariable;
  */
 @FeignClient(name = "service-item",path = "/gmall/item")
 public interface ItemFeignClient {
-    @GetMapping("/getSkuDetails/{skuId}")
-    public Result getSkuDetails(@PathVariable("skuId") Long skuId);
+    @GetMapping("/getSkuDetails")
+    public Result getSkuDetails(@RequestParam("skuId")Long skuId);
 }

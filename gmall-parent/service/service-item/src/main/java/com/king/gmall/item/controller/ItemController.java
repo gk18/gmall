@@ -2,12 +2,10 @@ package com.king.gmall.item.controller;
 
 import com.king.gmall.common.result.Result;
 import com.king.gmall.item.service.ItemService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.websocket.server.PathParam;
 
 /***
  * ClassName: ItemController
@@ -22,8 +20,8 @@ import javax.annotation.Resource;
 public class ItemController {
     @Resource
     private ItemService itemService;
-    @GetMapping("/getSkuDetails/{skuId}")
-    public Result getSkuDetails(@PathVariable("skuId") Long skuId) {
+    @GetMapping("/getSkuDetails")
+    public Result getSkuDetails(@RequestParam("skuId") Long skuId) {
         return Result.ok(itemService.getSkuDetails(skuId));
     }
 }
