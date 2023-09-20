@@ -26,6 +26,20 @@ public interface ProductClientService {
     SkuInfo getSkuInfo(Long skuId);
 
     /**
+     * 使用redis加锁获取sku信息
+     * @param skuId
+     * @return
+     */
+    SkuInfo getSkuInfoByRedis(Long skuId);
+
+    /**
+     * 使用Redisson加锁获取sku信息
+     * @param skuId
+     * @return
+     */
+    SkuInfo getSkuInfoByRedisson(Long skuId);
+
+    /**
      * 根据skuId查询图片列表
      * @param skuId
      * @return

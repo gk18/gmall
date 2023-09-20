@@ -1,5 +1,6 @@
 package com.king.gmall.product.controller;
 
+import com.king.gmall.common.cache.KingGmallCache;
 import com.king.gmall.model.product.BaseCategoryView;
 import com.king.gmall.model.product.SkuImage;
 import com.king.gmall.model.product.SkuInfo;
@@ -36,6 +37,7 @@ public class InnerProductController {
      * @return
      */
     @GetMapping("/getSkuInfo/{skuId}")
+    @KingGmallCache(prefix = "getSkuInfo:")
     public SkuInfo getSkuInfo(@PathVariable("skuId") Long skuId) {
         return productClientService.getSkuInfo(skuId);
     }
@@ -46,6 +48,7 @@ public class InnerProductController {
      * @return
      */
     @GetMapping("/getSkuImage/{skuId}")
+    @KingGmallCache(prefix = "getImageList:")
     public List<SkuImage> getImageList(@PathVariable("skuId") Long skuId) {
         return productClientService.getSkuImageBySkuId(skuId);
     }
@@ -57,6 +60,7 @@ public class InnerProductController {
      * @return
      */
     @GetMapping("/getCategoryView/{category3Id}")
+    @KingGmallCache(prefix = "getCategoryView:")
     public BaseCategoryView getCategoryView(@PathVariable("category3Id") Long category3Id) {
         return productClientService.getCategoryViewByCategory3Id(category3Id);
     }
@@ -68,6 +72,7 @@ public class InnerProductController {
      * @return
      */
     @GetMapping("/getSkuPrice/{skuId}")
+    @KingGmallCache(prefix = "getSkuPrice:")
     public BigDecimal getSkuPrice(@PathVariable("skuId") Long skuId) {
         return productClientService.getSkuPrice(skuId);
     }
@@ -80,6 +85,7 @@ public class InnerProductController {
      * @return
      */
     @GetMapping("/getSpuAttrListCheckBySku/{skuId}/{spuId}")
+    @KingGmallCache(prefix = "getSpuAttrListCheckBySku:")
     public List<SpuSaleAttr> getSpuAttrListCheckBySku(@PathVariable("skuId") Long skuId,
                                                       @PathVariable("spuId") Long spuId) {
         return productClientService.getSpuSaleAttrListCheckBySku(skuId, spuId);
@@ -91,6 +97,7 @@ public class InnerProductController {
      * @return
      */
     @GetMapping("/getSkuValueIdsMap/{spuId}")
+    @KingGmallCache(prefix = "getSkuValueIdsMap:")
     public Map getSkuValueIdsMap(@PathVariable("spuId") Long spuId){
         return productClientService.getSkuValueIdsMap(spuId);
     }

@@ -50,7 +50,7 @@ public class ItemServiceImpl implements ItemService {
         CompletableFuture<SkuInfo> future1 = CompletableFuture.supplyAsync(() -> {
 
             SkuInfo skuInfo = productFeignClient.getSkuInfo(skuId);
-            if (skuInfo == null || skuInfo.getSpuId() == null) {
+            if (skuInfo == null || skuInfo.getId() == null) {
                 return null;
             }
             map.put("skuInfo", skuInfo);
