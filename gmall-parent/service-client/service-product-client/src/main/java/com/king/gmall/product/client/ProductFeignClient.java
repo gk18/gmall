@@ -1,10 +1,7 @@
 package com.king.gmall.product.client;
 
 import com.king.gmall.common.result.Result;
-import com.king.gmall.model.product.BaseCategoryView;
-import com.king.gmall.model.product.SkuImage;
-import com.king.gmall.model.product.SkuInfo;
-import com.king.gmall.model.product.SpuSaleAttr;
+import com.king.gmall.model.product.*;
 import com.king.gmall.product.client.fallback.ProductFeignClientFallback;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -80,4 +77,18 @@ public interface ProductFeignClient {
      */
     @GetMapping("/getSkuValueIdsMap/{spuId}")
     public Map getSkuValueIdsMap(@PathVariable("spuId") Long spuId);
+    /**
+     * 根据品牌id查询品牌数据
+     * @param id
+     * @return
+     */
+    @GetMapping("/getBaseTrademarkById/{id}")
+    public BaseTrademark getBaseTrademarkById(@PathVariable("id") Long id);
+    /**
+     * 根据skuId查询平台属性和平台属性值
+     * @param skuId
+     * @return
+     */
+    @GetMapping("/getAttrNameAndValueBySkuId/{skuId}")
+    public List<BaseAttrInfo> getAttrNameAndValueBySkuId(@PathVariable("skuId") Long skuId);
 }

@@ -45,6 +45,10 @@ public class ProductClientServiceImpl implements ProductClientService {
     private RedissonClient redissonClient;
     @Resource
     private ServletWebServerApplicationContext webServerAppContext;
+    @Resource
+    private BaseTrademarkMapper baseTrademarkMapper;
+    @Resource
+    private BaseAttrInfoMapper baseAttrInfoMapper;
 
     /**
      * 根据skuId获取sku信息并封装image
@@ -260,5 +264,27 @@ public class ProductClientServiceImpl implements ProductClientService {
             result.put(map.get("value_id"), map.get("sku_id"));
         });
         return result;
+    }
+
+    /**
+     * 根据品牌id查询品牌
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public BaseTrademark getBaseTrademarkById(Long id) {
+        return baseTrademarkMapper.selectById(id);
+    }
+
+    /**
+     * 根据skuId查询平台属性和平台属性值
+     *
+     * @param skuId
+     * @return
+     */
+    @Override
+    public List<BaseAttrInfo> getAttrNameAndValueBySkuId(Long skuId) {
+        return baseAttrInfoMapper.selectAttrNameAndValueBySkuId(skuId);
     }
 }

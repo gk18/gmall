@@ -22,4 +22,27 @@
         WHERE
             t1.category_id = #{categoryId}
     </select>
+    <select id="selectAttrNameAndValueBySkuId" resultMap="buildTree">
+        SELECT
+            t1.id,
+            t1.attr_name,
+            t1.category_id,
+            t2.id v_id,
+            t2.value_name,
+            t2.attr_id
+        FROM
+            base_attr_info t1
+                INNER JOIN
+            base_attr_value t2
+            ON
+                t1.id = t2.attr_id
+                INNER JOIN
+            sku_attr_value t3
+            ON
+                t1.id = t3.attr_id AND t2.id = t3.value_id
+        WHERE
+            t3.sku_id = #{skuId}
+
+
+    </select>
 </mapper>

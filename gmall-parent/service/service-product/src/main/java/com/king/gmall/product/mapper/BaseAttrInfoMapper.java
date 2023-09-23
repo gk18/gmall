@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.king.gmall.model.product.BaseAttrInfo;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -23,6 +24,13 @@ public interface BaseAttrInfoMapper extends BaseMapper<BaseAttrInfo> {
      * @param categoryId
      * @return
      */
-    List<BaseAttrInfo> selectAttrInfo(Long categoryId);
+    List<BaseAttrInfo> selectAttrInfo(@Param("categoryId") Long categoryId);
+
+    /**
+     * 根据skuId查询平台属性和平台属性值
+     * @param skuId
+     * @return
+     */
+    List<BaseAttrInfo> selectAttrNameAndValueBySkuId(@Param("skuId") Long skuId);
 
 }

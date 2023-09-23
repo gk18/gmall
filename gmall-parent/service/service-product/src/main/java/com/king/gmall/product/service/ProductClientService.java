@@ -1,9 +1,6 @@
 package com.king.gmall.product.service;
 
-import com.king.gmall.model.product.BaseCategoryView;
-import com.king.gmall.model.product.SkuImage;
-import com.king.gmall.model.product.SkuInfo;
-import com.king.gmall.model.product.SpuSaleAttr;
+import com.king.gmall.model.product.*;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -77,4 +74,18 @@ public interface ProductClientService {
      * @return
      */
     Map getSkuValueIdsMap(Long spuId);
+
+    /**
+     * 根据品牌id查询品牌
+     * @param id
+     * @return
+     */
+    BaseTrademark getBaseTrademarkById(Long id);
+
+    /**
+     * 根据skuId查询平台属性和平台属性值
+     * @param skuId
+     * @return
+     */
+    List<BaseAttrInfo> getAttrNameAndValueBySkuId(Long skuId);
 }

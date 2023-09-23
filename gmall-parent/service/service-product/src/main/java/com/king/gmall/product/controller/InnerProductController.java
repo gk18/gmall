@@ -1,10 +1,7 @@
 package com.king.gmall.product.controller;
 
 import com.king.gmall.common.cache.KingGmallCache;
-import com.king.gmall.model.product.BaseCategoryView;
-import com.king.gmall.model.product.SkuImage;
-import com.king.gmall.model.product.SkuInfo;
-import com.king.gmall.model.product.SpuSaleAttr;
+import com.king.gmall.model.product.*;
 import com.king.gmall.product.service.ProductClientService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -101,4 +98,25 @@ public class InnerProductController {
     public Map getSkuValueIdsMap(@PathVariable("spuId") Long spuId){
         return productClientService.getSkuValueIdsMap(spuId);
     }
+
+    /**
+     * 根据品牌id查询品牌数据
+     * @param id
+     * @return
+     */
+    @GetMapping("/getBaseTrademarkById/{id}")
+    public BaseTrademark getBaseTrademarkById(@PathVariable("id") Long id) {
+        return productClientService.getBaseTrademarkById(id);
+    }
+
+    /**
+     * 根据skuId查询平台属性和平台属性值
+     * @param skuId
+     * @return
+     */
+    @GetMapping("/getAttrNameAndValueBySkuId/{skuId}")
+    public List<BaseAttrInfo> getAttrNameAndValueBySkuId(@PathVariable("skuId") Long skuId) {
+        return productClientService.getAttrNameAndValueBySkuId(skuId);
+    }
+
 }
