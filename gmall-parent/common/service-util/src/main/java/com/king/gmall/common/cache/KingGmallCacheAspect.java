@@ -66,11 +66,11 @@ public class KingGmallCacheAspect {
                     result = point.proceed();
                     if (result != null) {
                         //如果不为空,存入redis
-                        redisTemplate.opsForValue().set(key, result, 24 * 60 * 60, TimeUnit.SECONDS);
+                        redisTemplate.opsForValue().set(key, JSONObject.toJSONString(result), 24 * 60 * 60, TimeUnit.SECONDS);
                     } else {
                         //如果数据库也没有,反射创建空对象,存入redis
                         result = methodSignature.getReturnType().newInstance();
-                        redisTemplate.opsForValue().set(key, result, 300, TimeUnit.SECONDS);
+                        redisTemplate.opsForValue().set(key, JSONObject.toJSONString(result), 300, TimeUnit.SECONDS);
                     }
 
                     return result;

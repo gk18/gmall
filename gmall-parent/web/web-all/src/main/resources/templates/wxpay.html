@@ -1,56 +1,80 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html>
 
 	<head>
 		<meta charset="UTF-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE">
 		<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
 		<title>微信支付页</title>
-        <link rel="icon" href="/img/favicon.ico">
+        <link rel="icon" href="./img/favicon.ico">
 
 
-    <link rel="stylesheet" type="text/css" href="/css/all.css" />
-    <link rel="stylesheet" type="text/css" href="/css/pages-weixinpay.css" />
-		<div th:include="common/head :: head"></div>
+    <link rel="stylesheet" type="text/css" href="./css/all.css" />
+    <link rel="stylesheet" type="text/css" href="./css/pages-weixinpay.css" />
 </head>
 
 	<body>
 		<!--head-->
-		<div class="top">
-			<div class="py-container">
-				<div class="shortcut">
-					<ul class="fl">
-						<li class="f-item">尚品汇欢迎您！</li>
-						<li class="f-item">请登录　<span><a href="#">免费注册</a></span></li>
-					</ul>
-					<ul class="fr">
-						<li class="f-item">我的订单</li>
-						<li class="f-item space"></li>
-						<li class="f-item">我的尚品汇</li>
-						<li class="f-item space"></li>
-						<li class="f-item">尚品汇会员</li>
-						<li class="f-item space"></li>
-						<li class="f-item">企业采购</li>
-						<li class="f-item space"></li>
-						<li class="f-item">关注尚品汇</li>
-						<li class="f-item space"></li>
-						<li class="f-item">客户服务</li>
-						<li class="f-item space"></li>
-						<li class="f-item">网站导航</li>
-					</ul>
+		<div id="nav-bottom">
+			<!--顶部-->
+			<div class="nav-top">
+				<div class="top">
+					<div class="py-container">
+						<div class="shortcut">
+							<ul class="fl">
+								<li class="f-item">尚品汇欢迎您！</li>
+								<li class="f-item">请<a href="login.html" target="_blank">登录</a>　<span><a href="register.html" target="_blank">免费注册</a></span></li>
+							</ul>
+							<div class="fr typelist">
+								<ul class="types">
+									<li class="f-item"><span>我的订单</span></li>
+
+									<li class="f-item"><span><a href="cart.html" target="_blank">我的购物车</a></span></li>
+									<li class="f-item"><span><a href="home.html" target="_blank">我的尚品汇</a></span></li>
+									<li class="f-item"><span>尚品汇会员</span></li>
+									<li class="f-item"><span>企业采购</span></li>
+									<li class="f-item"><span>关注尚品汇</span></li>
+									<li class="f-item"><span><a href="cooperation.html" target="_blank">合作招商</a></span></li>
+									<li class="f-item"><span><a href="shoplogin.html" target="_blank">商家后台</a></span></li>
+								</ul>
+							</div>
+
+						</div>
+					</div>
+				</div>
+
+				<!--头部-->
+				<div class="header">
+					<div class="py-container">
+						<div class="yui3-g Logo">
+							<div class="yui3-u Left logoArea">
+								<a class="logo-bd" title="尚品汇" href="index.html" target="_blank"></a>
+							</div>
+							<div class="yui3-u Rit searchArea">
+								<div class="search">
+									<form action="" class="sui-form form-inline">
+										<!--searchAutoComplete-->
+										<div class="input-append">
+											<input type="text" id="autocomplete"   class="input-error input-xxlarge" />
+											<button class="sui-btn btn-xlarge btn-danger" type="button">搜索</button>
+										</div>
+									</form>
+								</div>
+							</div>
+
+						</div>
+
+					</div>
 				</div>
 			</div>
 		</div>
-		<div class="cart py-container" id="item">
-			<!--logoArea-->
-			<div class="logoArea">
-				<div class="fl logo"><span class="title">收银台</span></div>
-			</div>
+		<div class="cart py-container">
+
 			<!--主内容-->
 			<div class="checkout py-container  pay">
 				<div class="checkout-tit">
-					<h4 class="fl tit-txt"><span class="success-icon"></span><span  class="success-info">订单提交成功，请您及时付款！订单号：{{data.orderId}}</span></h4>
-                    <span class="fr"><em class="sui-lead">应付金额：</em><em  class="orange money">￥{{data.totalFee}}</em>元</span>
+					<h4 class="fl tit-txt"><span class="success-icon"></span><span  class="success-info">订单提交成功，请您及时付款！订单号：56789065645</span></h4>
+                    <span class="fr"><em class="sui-lead">应付金额：</em><em  class="orange money">￥17,654</em>元</span>
 					<div class="clearfix"></div>
 				</div>
 				<div class="checkout-steps">
@@ -159,58 +183,39 @@
 	</div>
 </div>
 <!--页面底部END-->
+
+
+
+
 </body>
-<script src="/js/api/payment.js"></script>
-<script src="/js/plugins/qrcode.min.js" ></script>
-<script src="/js/plugins/stomp.min.js" ></script>
-<script th:inline="javascript">
-	var item = new Vue({
-		el: '#item',
+<script src="js/plugins/qrcode.min.js" ></script>
+<script src="js/plugins/stomp.min.js" ></script>
+<script type="text/javascript">
+let qrcode = new QRCode(document.getElementById("qrcode"), {
+	width : 240,
+	height : 240
+});
+qrcode.makeCode("weixin://wxpay/bizpayurl?pr=Y3hDTZy");
 
-		data: {
-            orderId: [[${orderId}]],
-            timer: null,  // 定时器名称
-            initQCode: '',
-			isRun: false,
-            data: {}
-		},
 
-        created() {
-            debugger
-            payment.createNative(this.orderId).then(response => {
-                this.data = response.data.data
-                let qrcode = new QRCode(document.getElementById("qrcode"), {
-                    width : 300,
-                    height : 300
-                });
-                qrcode.makeCode(this.data.codeUrl);
-                this.isRun = true
-            })
-        },
-
-        mounted() {
-            var timer = setInterval(() => {
-                this.queryPayStatus(this.orderId)
-            }, 3000);
-            // 通过$once来监听定时器，在beforeDestroy钩子可以被清除。
-            this.$once('hook:beforeDestroy', () => {
-                clearInterval(timer);
-            })
-        },
-
-        methods: {
-            queryPayStatus(orderId) {
-                // debugger
-				if(!this.isRun) return
-                payment.queryPayStatus(orderId).then(response => {
-                    // debugger
-                    if (response.data.code == 200) {
-                        window.location.href = '/pay/success.html'
-                    }
-                })
-            }
+let client = Stomp.client('ws://127.0.0.1:15674/ws');
+let on_connect = function(x) {
+    id = client.subscribe("/exchange/paynotify", function(d) {
+        let orderId="11001021010312";//订单号
+        if(d.body==orderId){
+            location.href='/paysuccess.html?payMoney=1'; //参数支付金额
         }
-	})
+    });
+};
+let on_error =  function() {
+    console.log('error');
+};
+client.connect('webguest', 'itcast', on_connect, on_error, '/');
+
+
 </script>
+
+
+
 
 </html>

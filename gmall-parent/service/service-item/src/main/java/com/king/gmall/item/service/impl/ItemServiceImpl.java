@@ -102,6 +102,7 @@ public class ItemServiceImpl implements ItemService {
             map.put("skuValueIdsMap", skuValueIdsMap);
         },threadPoolExecutor);
         CompletableFuture.allOf(future2, future3, future4, future5, future6).join();
+
         return map;
 
 

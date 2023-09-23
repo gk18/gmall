@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Thymeleaf----Demo</title>
+</head>
+<body>
+<!--展示字符串-->
+<div th:text="${description}"></div>
+<!--展示字符串,包含html代码-->
+<div th:text="${html}"></div>
+<div th:utext="${html}"></div>
+<!--循环展示-->
+<div>
+    <table>
+        <thead>
+        <tr>
+            <td>count</td>
+            <td>current</td>
+            <td>even</td>
+            <td>first</td>
+            <td>index</td>
+            <td>last</td>
+            <td>odd</td>
+            <td>size</td>
+            <td>Id</td>
+            <td>Name</td>
+            <td>Email</td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="user,userState:${userList}">
+            <!--                序号-->
+            <td th:text="${userState.count}"></td>
+            <!--                当前对象-->
+            <td th:text="${userState.current}"></td>
+            <!--                偶数位-->
+            <td th:text="${userState.even}"></td>
+            <!--                第一个-->
+            <td th:text="${userState.first}"></td>
+            <!--                索引,从0开始-->
+            <td th:text="${userState.index}"></td>
+            <!--                最后一个-->
+            <td th:text="${userState.last}"></td>
+            <!--                奇数-->
+            <td th:text="${userState.odd}"></td>
+            <!--                总个数-->
+            <td th:text="${userState.size}"></td>
+            <td th:text="${user.id}"></td>
+            <td th:text="${user.name}"></td>
+            <td th:text="${user.email}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+<!--    条件判断-->
+<div th:if="${#lists.size(userList) >= 10}">当前列表长度大于等于10</div>
+<div th:unless="${#lists.size(userList) >= 10}">当前列表长度小于10</div>
+<!--map处理-->
+<div>
+    <table>
+        <tr>
+            <td>key</td>
+            <td>value</td>
+        </tr>
+        <tr th:each="entry:${map}">
+            <td th:text="${entry.key}"></td>
+            <td th:text="${entry.value}"></td>
+        </tr>
+    </table>
+</div>
+<!--日期展示-->
+<div th:if="${date} != null">当前时间:<span th:text="${#dates.format(date,'yyyy-MM-dd HH:mm:ss')}"></span></div>
+<!--字符串处理 replace,substring,split-->
+<div th:text="${#strings.replace(description,'Thymeleaf','--Thymeleaf--')}"></div>
+<div th:text="${#strings.substring(description,0,3)}"></div>
+<div th:text="${#strings.arraySplit(description,'的')[1]}"></div>
+<!--图片展示-->
+<div th:if="${imgUrl != null}">
+    <img th:src="${imgUrl}">
+</div>
+<!--超链接处理-->
+<div>
+    <a th:href="@{${baidu}(name='king',email='2788888855@qq.com')}"><h1>点我跳转百度</h1></a>
+    <a th:href="@{${douyin}(name='king',email='2788888855@qq.com')}"><h1>点我跳转抖音</h1></a>
+</div>
+<!--数字for循环-->
+<div th:each="num,i:${#numbers.sequence(10,1,-1)}">
+    <ul th:text="${i.count+'----'+num}"></ul>
+</div>
+</body>
+</html>

@@ -17,7 +17,7 @@ import org.springframework.context.annotation.ComponentScan;
  */
 @SpringBootApplication(exclude = DataSourceAutoConfiguration.class)
 @EnableDiscoveryClient
-@EnableFeignClients(basePackages = "com.king.gmall.item.client")
+@EnableFeignClients(basePackages = {"com.king.gmall.item.client","com.king.gmall.product.client"})
 @ComponentScan("com.king.gmall")
 public class WebAllApplication {
     public static void main(String[] args) {

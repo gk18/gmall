@@ -16,7 +16,7 @@ import javax.websocket.server.PathParam;
  * @description
  * @version 1.0
  */
-@FeignClient(name = "service-item",path = "/gmall/item")
+@FeignClient(name = "service-item",path = "/api/item")
 public interface ItemFeignClient {
     @GetMapping("/getSkuDetails")
     public Result getSkuDetails(@RequestParam("skuId")Long skuId);

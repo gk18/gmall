@@ -25,7 +25,8 @@ import java.util.Map;
 @FeignClient(
         value = "service-product",
         path = "/admin/product",
-        fallback = ProductFeignClientFallback.class)
+        fallback = ProductFeignClientFallback.class,
+        contextId = "productFeignClient")
 public interface ProductFeignClient {
     /**
      * 查询sku信息

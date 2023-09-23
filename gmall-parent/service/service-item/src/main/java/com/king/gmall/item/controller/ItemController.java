@@ -16,7 +16,7 @@ import javax.websocket.server.PathParam;
  * @version 1.0
  */
 @RestController
-@RequestMapping("/gmall/item")
+@RequestMapping("/api/item")
 public class ItemController {
     @Resource
     private ItemService itemService;
@@ -24,4 +24,5 @@ public class ItemController {
     public Result getSkuDetails(@RequestParam("skuId") Long skuId) {
         return Result.ok(itemService.getSkuDetails(skuId));
     }
+
 }

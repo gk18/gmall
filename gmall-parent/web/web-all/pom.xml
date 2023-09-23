@@ -18,6 +18,12 @@
             <artifactId>service-item-client</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+<!--        product远程调用接口模块-->
+        <dependency>
+            <groupId>com.king.gmall</groupId>
+            <artifactId>service-product-client</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
     <build>
         <finalName>web-all</finalName>
