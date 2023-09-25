@@ -9,9 +9,7 @@ import com.king.gmall.model.product.BaseCategoryView;
 import com.king.gmall.model.product.BaseTrademark;
 import com.king.gmall.model.product.SkuInfo;
 import com.king.gmall.product.client.ProductFeignClient;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
+
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
