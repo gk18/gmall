@@ -10,6 +10,7 @@ import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.common.text.Text;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
@@ -23,6 +24,8 @@ import org.elasticsearch.search.aggregations.bucket.terms.ParsedStringTerms;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.elasticsearch.search.aggregations.bucket.terms.TermsAggregationBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -131,6 +134,15 @@ public class SearchServiceImpl implements SearchService {
         }
         //设置组合查询条件
         sourceBuilder.query(boolQueryBuilder);
+        //高亮查询条件
+        HighlightBuilder highlightBuilder = new HighlightBuilder();
+
+        highlightBuilder
+                .field("title")//域
+                .preTags("<font style=color:red>")//前缀
+                .postTags("</font>");//后缀
+        //设置高亮查询
+        sourceBuilder.highlighter(highlightBuilder);
         //品牌聚合
         TermsAggregationBuilder tmAggregationBuilder = AggregationBuilders.terms("aggTmId").field("tmId")
                 .subAggregation(AggregationBuilders.terms("aggTmName").field("tmName"))
@@ -158,7 +170,7 @@ public class SearchServiceImpl implements SearchService {
         //每页50条
         sourceBuilder.size(50);
         //分页
-        sourceBuilder.from((getPage(searchData.get("page")) - 1) * 50);
+        sourceBuilder.from((getPage(searchData.get("pageNum")) - 1) * 50);
 
         searchRequest.source(sourceBuilder);
         return searchRequest;
@@ -205,7 +217,20 @@ public class SearchServiceImpl implements SearchService {
             //获取原始数据
             String sourceAsString = next.getSourceAsString();
             //反序列化
-            goodsList.add(JSONObject.parseObject(sourceAsString, Goods.class));
+            Goods goods = JSONObject.parseObject(sourceAsString, Goods.class);
+            HighlightField highlightField = next.getHighlightFields().get("title");
+            if(highlightField != null) {
+                Text[] fragments = highlightField.getFragments();
+                if(fragments  != null && fragments.length > 0) {
+                    goods.setTitle("");
+                    for (Text fragment : fragments) {
+                        goods.setTitle(goods.getTitle() + fragment);
+                    }
+
+                }
+            }
+            goodsList.add(goods);
+
         }
         result.put("goodsList", goodsList);
         //获取聚合结果

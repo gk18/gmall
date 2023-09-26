@@ -235,7 +235,7 @@ ul.logo-list li {
   display: inline-block;
   *display: inline;
   *zoom: 1;
-  width: 490px;
+  width: 600px;
   float: left;
 }
 .sui-pagination ul > .active > a {

@@ -411,6 +411,7 @@ public class ElasticSearchTest {
 //            System.out.println(JSONObject.parseObject(next.getSourceAsString(), Book.class));
             Book book = JSONObject.parseObject(next.getSourceAsString(), Book.class);
             HighlightField highlightField = next.getHighlightFields().get("content");
+
             if(highlightField != null) {
 
                 Text[] fragments = highlightField.getFragments();
