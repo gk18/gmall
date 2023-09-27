@@ -2,7 +2,6 @@ package com.king.gmall.all.controller;
 
 import com.king.gmall.all.util.Page;
 import com.king.gmall.list.client.ListFeignClient;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
